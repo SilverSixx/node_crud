@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const repo = require("../repo/queryFuns");
+const UserModel = require("../model/User");
 const bcrypt = require("bcrypt");
 
 const map = new Map();
@@ -35,8 +35,9 @@ async function confirmToken(token) {
 
 async function isAccountEnabled(user) {
     if (map.get(user.username)) {
-        const userFromDB = await repo.findUserByUsername(user.username);
-        console.log(userFromDB);
+        const userFromDB = await UserModel.findOne({
+            where: { username: user.username },
+        });
         if (
             userFromDB &&
             userFromDB.username === user.username &&

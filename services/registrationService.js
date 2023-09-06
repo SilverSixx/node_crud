@@ -1,6 +1,6 @@
-const repo = require("../repo/queryFuns");
+const UserModel = require("../model/User");
 const bcrypt = require("bcrypt");
-
+const packageJson = require("../package.json");
 const {
     generateToken,
     confirmToken,
@@ -28,8 +28,10 @@ async function register(req, res) {
                 msg: "Registration failed. Invalid username (prompt: using your email).",
             });
         }
-        const usernameExists = await repo.ExistByUsername(user.username);
-        if (usernameExists) {
+        const usernameCount = await UserModel.count({
+            where: { username: user.username },
+        });
+        if (usernameCount > 0) {
             return res.status(400).json({
                 success: false,
                 msg: "Registration failed. Username already exists.",
@@ -42,10 +44,10 @@ async function register(req, res) {
                 msg: "Registration failed. Invalid phone number.",
             });
         }
-        const phoneNumberExists = await repo.ExistByPhoneNumber(
-            user.phoneNumber
-        );
-        if (phoneNumberExists) {
+        const phoneCount = await UserModel.count({
+            where: { phoneNumber: user.phoneNumber },
+        });
+        if (phoneCount > 0) {
             return res.status(400).json({
                 success: false,
                 msg: "Registration failed. Phone number already exists.",
@@ -54,10 +56,10 @@ async function register(req, res) {
 
         const hashedPassword = await bcrypt.hash(user.password, 10);
         user.password = hashedPassword;
-        await repo.addNewUser(user);
+        await UserModel.create(user);
 
         const token = await generateToken(user.username);
-        const link = `http://localhost:3000/api/v1/register?token=${token}`;
+        const link = `${packageJson.server}/api/v1/register?token=${token}`;
         await sendAccountCreationMail(link, user.username);
 
         return res.status(200).json({

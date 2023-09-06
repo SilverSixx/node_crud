@@ -4,7 +4,7 @@ const router = express.Router();
 
 const { register, enableUser } = require("../services/registrationService");
 
-router.post("/register", register);
-router.get("/register", enableUser);
+router.post("/", register);
+router.get("/", enableUser);
 
 module.exports = router;
