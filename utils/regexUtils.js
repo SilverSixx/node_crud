@@ -3,5 +3,4 @@ const regexMail =
 const regexPhoneNumber =
     /^(?:\+84|0)(?:3[2-9]|5[2689]|7[0|6-9]|8[1-9]|9[0-9])\d{7}$/;
 
-
-module.exports = { regexMail, regexPhoneNumber };
+module.exports = {regexMail, regexPhoneNumber}

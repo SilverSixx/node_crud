@@ -1,13 +1,12 @@
 const UserModel = require("../model/User");
 const bcrypt = require("bcrypt");
-const packageJson = require("../package.json");
+const {regexMail, regexPhoneNumber} = require('../utils/regexUtils')
 const {
     generateToken,
     confirmToken,
     isAccountEnabled,
 } = require("../utils/tokenUtils");
 const { sendAccountCreationMail } = require("../utils/mailUtils");
-const { regexMail, regexPhoneNumber } = require("../utils/userUtils");
 
 async function register(req, res) {
     try {
@@ -59,7 +58,7 @@ async function register(req, res) {
         await UserModel.create(user);
 
         const token = await generateToken(user.username);
-        const link = `${packageJson.server}/api/v1/register?token=${token}`;
+        const link = `${process.env.DB_URI}/api/v1/register?token=${token}`;
         await sendAccountCreationMail(link, user.username);
 
         return res.status(200).json({

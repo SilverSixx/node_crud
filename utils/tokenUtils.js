@@ -6,7 +6,7 @@ const map = new Map();
 
 async function generateToken(username) {
     const userProperties = { username };
-    const token = jwt.sign(userProperties, "supersecret", { expiresIn: "15m" });
+    const token = jwt.sign(userProperties, process.env.SECRET_KEY , { expiresIn: "15m" });
 
     map.set(username, {
         token,

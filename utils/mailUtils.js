@@ -1,10 +1,9 @@
 const { mailSender } = require("../mail/mailProperites");
 const { accountCreationMail } = require("../mail/mailContent");
 
-const from = "phamluongdat231103@gmail.com";
 
 const mailOptions = {
-    from: from,
+    from: process.env.MAIL_SENDER,
     to: "",
     subject: "",
     html: "",

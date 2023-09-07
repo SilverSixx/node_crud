@@ -1,10 +1,10 @@
 const mail = require('nodemailer')
 
 const mailSender = mail.createTransport({
-    service: "gmail",
+    service: process.env.MAIL_APP,
     auth: {
-        user: "phamluongdat231103@gmail.com",
-        pass: "zoglomrhavxqzihl", // Use the app password you generated
+        user: process.env.MAIL_SENDER,
+        pass: process.env.MAIL_PASSWORD, // Use the app password you generated
     },
 });
 
