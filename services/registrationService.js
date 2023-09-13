@@ -1,8 +1,8 @@
-const UserModel = require("../model/User");
+const { User } = require("../model/UserDB");
 const bcrypt = require("bcrypt");
 const {regexMail, regexPhoneNumber} = require('../utils/regexUtils')
 const {
-    generateToken,
+    generateConfirmToken,
     confirmToken,
     isAccountEnabled,
 } = require("../utils/tokenUtils");
@@ -27,7 +27,7 @@ async function register(req, res) {
                 msg: "Registration failed. Invalid username (prompt: using your email).",
             });
         }
-        const usernameCount = await UserModel.count({
+        const usernameCount = await User.count({
             where: { username: user.username },
         });
         if (usernameCount > 0) {
@@ -43,7 +43,7 @@ async function register(req, res) {
                 msg: "Registration failed. Invalid phone number.",
             });
         }
-        const phoneCount = await UserModel.count({
+        const phoneCount = await User.count({
             where: { phoneNumber: user.phoneNumber },
         });
         if (phoneCount > 0) {
@@ -55,10 +55,10 @@ async function register(req, res) {
 
         const hashedPassword = await bcrypt.hash(user.password, 10);
         user.password = hashedPassword;
-        await UserModel.create(user);
+        await User.create(user);
 
-        const token = await generateToken(user.username);
-        const link = `${process.env.DB_URI}/api/v1/register?token=${token}`;
+        const token = await generateConfirmToken(user.username);
+        const link = `${process.env.SERVER_DOMAIN}/api/v1/register?token=${token}`;
         await sendAccountCreationMail(link, user.username);
 
         return res.status(200).json({

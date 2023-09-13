@@ -1,7 +1,6 @@
 const { mailSender } = require("../mail/mailProperites");
 const { accountCreationMail } = require("../mail/mailContent");
 
-
 const mailOptions = {
     from: process.env.MAIL_SENDER,
     to: "",

@@ -1,13 +1,13 @@
 const jwt = require("jsonwebtoken");
-const UserModel = require("../model/User");
+const { User, Role } = require("../model/UserDB");
 const bcrypt = require("bcrypt");
 
 const map = new Map();
 
-async function generateToken(username) {
-    const userProperties = { username };
-    const token = jwt.sign(userProperties, process.env.SECRET_KEY , { expiresIn: "15m" });
+const secret_key = process.env.SECRET_KEY;
 
+async function generateConfirmToken(username) {
+    const token = jwt.sign({sub:username}, secret_key, { expiresIn: "15m" });
     map.set(username, {
         token,
         expiration: Date.now() + 15 * 60 * 1000,
@@ -35,7 +35,7 @@ async function confirmToken(token) {
 
 async function isAccountEnabled(user) {
     if (map.get(user.username)) {
-        const userFromDB = await UserModel.findOne({
+        const userFromDB = await User.findOne({
             where: { username: user.username },
         });
         if (
@@ -57,4 +57,4 @@ async function isAccountEnabled(user) {
     }
 }
 
-module.exports = { generateToken, confirmToken, isAccountEnabled };
+module.exports = { generateConfirmToken, confirmToken, isAccountEnabled };

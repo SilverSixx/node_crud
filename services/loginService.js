@@ -1,4 +1,4 @@
-const UserModel = require("../model/User");
+const { User } = require("../model/UserDB");
 const bcrypt = require("bcrypt");
 const { isAccountEnabled } = require("../utils/tokenUtils");
 
@@ -12,7 +12,7 @@ async function login(req, res) {
         });
     }
 
-    const userFromDB = await UserModel.findOne({
+    const userFromDB = await User.findOne({
         where: { username: user.username },
     });
     if (userFromDB) {
